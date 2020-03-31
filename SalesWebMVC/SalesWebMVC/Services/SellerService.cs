@@ -27,6 +27,9 @@ namespace SalesWebMVC.Services
         // It will insert a new seller in the database
         public void Insert(Seller obj)
         {
+            // To search for the first department that exists in the BD
+            // It will prevent errors from happening due to lack of the department field when creating the seller
+            obj.Department = _context.Department.First();
             _context.Add(obj);
             _context.SaveChanges();
         }
