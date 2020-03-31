@@ -29,7 +29,7 @@ namespace SalesWebMVC.Services
         {
             // To search for the first department that exists in the BD
             // It will prevent errors from happening due to lack of the department field when creating the seller
-            obj.Department = _context.Department.First();
+            // obj.Department = _context.Department.First();
             _context.Add(obj);
             _context.SaveChanges();
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SalesWebMVC.Models;
+using SalesWebMVC.Models.ViewModels;
 using SalesWebMVC.Services;
 
 namespace SalesWebMVC.Controllers
@@ -11,10 +12,12 @@ namespace SalesWebMVC.Controllers
     public class SellersController : Controller
     {
         private readonly SellerService _sellerService;
+        private readonly DepartmentService _departmentService;
 
-        public SellersController(SellerService sellerService)
+        public SellersController(SellerService sellerService, DepartmentService departmentService)
         {
             _sellerService = sellerService;
+            _departmentService = departmentService;
         }
 
         public IActionResult Index()
@@ -26,10 +29,14 @@ namespace SalesWebMVC.Controllers
 
         public IActionResult Create()
         {
-            return View();
+            // Load departments.
+            var departments = _departmentService.FindAll();
+            // Starts with the previously loaded departments.
+            var viewModel = new SellerFormViewModel { Departments = departments };
+            return View(viewModel);
         }
 
-        // Post action
+        // Post action.
         [HttpPost]
         // It will prevent the application from suffering a a CSRF attack 
         // (when someone takes advantage of my authentication session and sends malicious data).
