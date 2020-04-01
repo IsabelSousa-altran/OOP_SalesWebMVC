@@ -21,45 +21,47 @@ namespace SalesWebMVC.Services
 
         // To return a list of all sellers
         // Synchronous operation (wait until it is done)
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList();
+            return await _context.Seller.ToListAsync();
         }
 
         // It will insert a new seller in the database
-        public void Insert(Seller obj)
+        public async Task InsertAsync(Seller obj)
         {
             // To search for the first department that exists in the BD
             // It will prevent errors from happening due to lack of the department field when creating the seller
             // obj.Department = _context.Department.First();
             _context.Add(obj);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public Seller FindById(int id)
+        public async Task<Seller> FindByIdAsync(int id)
         {
             // Include - joins the tables to obtain the department
-            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
+            return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            var obj = _context.Seller.Find(id);
+            var obj = await _context.Seller.FindAsync(id);
             _context.Seller.Remove(obj);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Update(Seller seller)
+        public async Task UpdateAsync(Seller seller)
         {
             // Only update if there is already an id equal to the one provided
-            if (!_context.Seller.Any(x => x.Id == seller.Id))
+
+            bool hasAny = await _context.Seller.AnyAsync(x => x.Id == seller.Id);
+            if (!hasAny)
             {
                 throw new NotFoundException("Id not found");
             }
             try
             {
                 _context.Update(seller);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             // I am intercepting an exception from the data access level 
             // and re-launching that exception but at the service level.
