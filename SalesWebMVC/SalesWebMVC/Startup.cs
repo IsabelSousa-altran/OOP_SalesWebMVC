@@ -48,6 +48,7 @@ namespace SalesWebMVC
             // the service can now be injected into other classes
             services.AddScoped<SellerService>();
             services.AddScoped<DepartmentService>();
+            services.AddScoped<SalesRecordsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
